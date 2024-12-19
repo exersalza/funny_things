@@ -2,24 +2,12 @@ import { useEffect, useRef, useState } from "preact/hooks"
 
 type xy = { x: number, y: number };
 
-enum Direction {
-  LEFT,
-  RIGHT,
-  TOP,
-  TOP_LEFT,
-  TOP_RIGHT,
-  BOTTOM,
-  BOTTOM_LEFT,
-  BOTTOM_RIGHT,
-}
-
 type MovingRainbowBoxState = {
   pos: xy;
   border: xy;
   hslColor: number;
   increaseXBy: number;
   increaseYBy: number;
-  direction: Direction;
   speed: number;
 }
 
@@ -27,14 +15,11 @@ function increaseHsl(last: number): number {
   return ++last && last <= 360 ? last : 0
 }
 
-let loopers = 0;
-
 export function MovingRainbowBox() {
   const [states, setStates] = useState<MovingRainbowBoxState>({
     pos: { x: 100, y: 150 },
     border: { x: 0, y: 0 },
     hslColor: 0,
-    direction: Direction.BOTTOM_RIGHT,
     increaseXBy: 1,
     increaseYBy: 1,
     speed: 10,
@@ -77,11 +62,11 @@ export function MovingRainbowBox() {
           },
         }
 
-        let y = prev.increaseYBy - .1;
-        let x = prev.increaseXBy - .1;
-
+        let y = prev.increaseYBy;
+        let x = prev.increaseXBy;
         const calcAngle = (x: number) => {
-          return Math.max(Math.min(.9, Math.random()), .4)
+          //return Math.max(Math.min(.9, Math.random()), .7)
+          return 1
         }
 
         if (top) {
@@ -128,18 +113,21 @@ export function MovingRainbowBox() {
 
 
   return (
-    <div
-      ref={box}
-      className={"absolute transition"}
-      style={{
-        left: states.pos.x,
-        top: states.pos.y,
-      }}>
-      <div className={"h-24 w-24 rounded-xl grid place-items-center "} style={{
-        backgroundColor: `hsl(${states.hslColor}, 70%, 50%)`
-      }}>
-        <div className={"h-20 w-20 bg-zinc-900 rounded-xl"}>
 
+    <div className={"w-[725px] h-[427px] rounded border-2 border-white"}>
+      <div
+        ref={box}
+        className={"absolute transition"}
+        style={{
+          left: states.pos.x,
+          top: states.pos.y,
+        }}>
+        <div className={"h-24 w-24 rounded-xl grid place-items-center transition-move"} style={{
+          backgroundColor: `hsl(${states.hslColor}, 70%, 50%)`
+        }}>
+          <div className={"h-20 w-20 bg-zinc-900 rounded-xl"}>
+
+          </div>
         </div>
       </div>
     </div>
