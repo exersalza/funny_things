@@ -1,13 +1,21 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{tsx,ts}"],
+module.exports = {
   theme: {
     extend: {
-      boxShadow: {
-        eveninner: "inset 0px 0px 15px 11px rgba(0,0,0,0.87)"
+      animation: {
+        'gradient-xy': 'gradient-xy 15s ease infinite',
+      },
+      keyframes: {
+        'gradient-xy': {
+          '0%, 100%': {
+            'background-size': '400% 400%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        }
       }
-    },
-  },
-  plugins: [],
+    }
+  }
 }
-
