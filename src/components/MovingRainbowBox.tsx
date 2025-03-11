@@ -25,20 +25,33 @@ export function MovingRainbowBox() {
     speed: 10,
   });
 
-  let box = useRef<HTMLDivElement>();
+  let box = useRef<HTMLDivElement>(null);
   let loopers: number = 0;
 
   const loop = () => {
     setStates((prev) => {
       // parentBounding
-      let pb = box.current.parentElement.getBoundingClientRect();
-      let me = box.current.getBoundingClientRect();
+      let cBox = box.current;
+
+      if (!cBox) {
+        return prev
+      }
+
+      let pb = cBox.parentElement?.getBoundingClientRect();
+
+      if (!pb) {
+        return prev
+      }
+
+      let me = cBox.getBoundingClientRect();
       let add = 4;
       let temp = {
         pos: {
           x: prev.pos.x + prev.increaseXBy,
           y: prev.pos.y + prev.increaseYBy
-        }
+        },
+        increaseYBy: prev.increaseYBy,
+        increaseXBy: prev.increaseXBy
       };
 
       // Math.ceil(me.x + me.height + add) >= pb.height || Math.ceil( me.y + me.width + add) >= pb.width
@@ -64,25 +77,21 @@ export function MovingRainbowBox() {
 
         let y = prev.increaseYBy;
         let x = prev.increaseXBy;
-        const calcAngle = (x: number) => {
-          //return Math.max(Math.min(.9, Math.random()), .7)
-          return 1
-        }
 
         if (top) {
-          y = Number(Math.abs(calcAngle(y)));
+          y = 1;
         }
 
         if (bottom) {
-          y = Number(-Math.abs(calcAngle(y)));
+          y = -1;
         }
 
         if (right) {
-          x = Number(-Math.abs(calcAngle(x)));
+          x = -1;
         }
 
         if (left) {
-          x = Number(Math.abs(calcAngle(x)));
+          x = 1;
         }
 
         temp["increaseYBy"] = y;
@@ -122,7 +131,7 @@ export function MovingRainbowBox() {
           left: states.pos.x,
           top: states.pos.y,
         }}>
-        <div className={"h-24 w-24 rounded-xl grid place-items-center transition-move"} style={{
+        <div className={"h-24 w-24 rounded-2xl grid place-items-center transition-move"} style={{
           backgroundColor: `hsl(${states.hslColor}, 70%, 50%)`
         }}>
           <div className={"h-20 w-20 bg-zinc-900 rounded-xl"}>
