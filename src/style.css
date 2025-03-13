@@ -3,7 +3,7 @@
 .iridescent-overlay {
   @apply absolute inset-0;
   background: linear-gradient(
-    125deg,
+    var(--gradient-deg),
     rgba(255,0,255,0.4),
     rgba(0,255,255,0.4),
     rgba(255,255,0,0.4)

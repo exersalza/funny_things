@@ -13,10 +13,10 @@ const IridescentComponent = () => {
   );
 };
 
+
 interface NumberProps {
   number: number | string;
 }
-
 const NumberThingy = (props: NumberProps) => {
   return (
     <div className={"relative"}>
@@ -37,18 +37,17 @@ const NumberThingy = (props: NumberProps) => {
 };
 
 
-const Time = (props: { time: Date }) => {
+const Time = (props: { time: number }) => {
   const [time, setTime] = useState("");
 
+  function getTimeForThingy(timestamp: number) {
+    const time = new Date(timestamp * 1000);
+
+    return String(time.getHours()).padStart(2, "0") + String(time.getMinutes()).padStart(2, "0") + String(time.getSeconds()).padStart(2, "0")
+  }
+
   useEffect(() => {
-    const now = props.time;
-
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-
-    setTime(hours + minutes + seconds);
-
+    setTime(getTimeForThingy(props.time));
   }, [props.time]);
 
   return (
@@ -69,26 +68,56 @@ const Time = (props: { time: Date }) => {
   );
 };
 
+
+const Countdown = (props: { sec: number }) => {
+  const [time, setTime] = useState("");
+
+  const convertTimeToString = (s: number) => {
+
+    const hours = Math.floor(s / 3600);
+    const minutes = Math.floor((s % 3600) / 60);
+    const seconds = s % 60;
+
+    return String(hours).padStart(3, "0") + String(minutes).padStart(2, "0") + String(seconds).padStart(2, "0")
+  }
+
+  useEffect(() => {
+    setTime(convertTimeToString(props.sec))
+  }, [props.sec])
+
+  return (
+    <div
+      className={
+        "h-50 w-100 flex items-center select-none justify-center bg-white ring-1 ring-white ml-4 rounded-lg"
+      }
+    >
+      <NumberThingy number={time[0]} />
+      <NumberThingy number={time[1]} />
+      <NumberThingy number={time[2]} />
+      <p className={"text-6xl h-16 font-mono"}>:</p>
+      <NumberThingy number={time[3]} />
+      <NumberThingy number={time[4]} />
+      <p className={"text-6xl h-16 font-mono"}>:</p>
+      <NumberThingy number={time[5]} />
+      <NumberThingy number={time[6]} />
+    </div>
+  );
+}
+
+
 export function App() {
-  const [time1, setTime1] = useState(new Date());
-  const [time2, setTime2] = useState(new Date());
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(4000);
+  const [time1, setTime1] = useState(new Date().valueOf() / 1000);
 
-  useState(() => {
+  useEffect(() => {
     let i = setInterval(() => {
-      setTime1(new Date())
-
-    }, 1000);
-
-    let f = setInterval(() => {
-      let n = new Date();
-      setTime2(prev => n - prev);
+      setTime(prev => prev - 1)
+      setTime1(prev => prev - 1)
 
     }, 1000);
 
     return () => {
       clearInterval(i)
-      clearInterval(f)
     };
   }, [])
 
@@ -97,7 +126,7 @@ export function App() {
       <MovingRainbowBox />
       <IridescentComponent />
       <Time time={time1} />
-      <Time time={time2} />
+      <Countdown sec={time} />
     </div>
   );
 }
