@@ -113,6 +113,7 @@ const Countdown = (props: {
 type TimerCompState = {
   time: number;
   timerPaused: boolean;
+  showAnimation: boolean;
   text: {
     upper: string;
     lower: string;
@@ -126,29 +127,34 @@ type TimerCompState = {
 };
 
 type Actions = {
-  type: "UpdateTime" | "IncTime" | "DecTime" | "TogglePause" | "UpdateText";
+  type: "UpdateTime" | "IncTime" | "DecTime" | "TogglePause" | "UpdateText" | "ToggleAnimate";
   payload?: any;
 };
 
 const TimerComp = () => {
-  const reducer = (state: TimerCompState, action: Actions) => {
+  const reducer = (prev: TimerCompState, action: Actions) => {
     switch (action.type) {
       case "UpdateTime":
-        return { ...state, time: action.payload.time };
+        return { ...prev, time: action.payload.time };
       case "IncTime":
-        return { ...state, time: state.time + 1 };
+        return { ...prev, time: prev.time + 1 };
       case "DecTime":
-        return { ...state, time: state.time - 1 };
+        return { ...prev, time: Math.max(0, prev.time - 1) };
       case "UpdateText":
         return {
-          ...state,
-          text: { ...state.text, [action.payload.key]: action.payload.value },
+          ...prev,
+          text: { ...prev.text, [action.payload.key]: action.payload.value },
         };
 
       case "TogglePause":
         return {
-          ...state,
-          timerPaused: !state.timerPaused
+          ...prev,
+          timerPaused: !prev.timerPaused
+        }
+      case "ToggleAnimate":
+        return {
+          ...prev,
+          showAnimation: !prev.showAnimation
         }
       default:
         throw Error("Action is not valid");
@@ -156,8 +162,9 @@ const TimerComp = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, {
-    time: 4000,
+    time: 4,
     text: { upper: "cool text", lower: "cool text" },
+    showAnimation: true,
     timerPaused: false,
     custom: {
       text: {
@@ -205,7 +212,7 @@ const TimerComp = () => {
         }
       >
         <p className={state.custom.text.upper}>{state.text.upper}</p>
-        <Countdown sec={state.time} showAnimation={true} className={""} />
+        <Countdown sec={state.time} showAnimation={state.showAnimation} className={""} />
         <p className={state.custom.text.lower}>{state.text.lower}</p>
       </div>
       <div className={"flex flex-col"}>
@@ -247,6 +254,15 @@ const TimerComp = () => {
           >
             {
               state.timerPaused ? <Play /> : <Pause />
+            }
+          </button>
+          <button
+            onClick={() => {
+              dispatch({ type: "ToggleAnimate" });
+            }}
+          >
+            {
+              !state.showAnimation ? <Play /> : <Pause />
             }
           </button>
         </div>
