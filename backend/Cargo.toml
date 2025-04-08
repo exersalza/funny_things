@@ -13,7 +13,7 @@ serde = { version = "1.0.217", features = ["derive"] }
 serde_derive = "1.0.217"
 serde_json = "1.0"
 sqlx = { version = "0.8.3", features = ["runtime-tokio", "sqlite"] }
-tokio = { version = "1.43.0", features = ["full"] }
+tokio = { version = "1.44.2", features = ["full"] }
 tokio-tungstenite = { version = "=0.26.1", features = ["native-tls"] }
 toml = "0.8.19"
 tower = "0.5.2"
